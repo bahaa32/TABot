@@ -14,6 +14,24 @@ class Queue(commands.Cog):
             return None
         return self.queue[guild_id].pop(0)
 
+    async def padded_queue(self, guild_id, response_size):
+        queue_len = len(self.queue[guild_id])
+        # Return response with "padding" according to requested
+        # response size, might be useful for the future
+        if not guild_id in self.queue or queue_len == 0:
+            if response_size < 0:
+                return []
+            return [None] * response_size
+        # If response size is greater than 0 and length of queue is bigger or equal to that,
+        # only return requested size
+        if response_size > 0:
+            if queue_len >= response_size:
+                return self.queue[guild_id][:response_size - 1]
+            else:
+                return self.queue[guild_id] + ([None] * (response_size - queue_len))
+        elif response_size == -1:
+            return self.queue[guild_id]
+
     def get_waiting(self, guild_id):
         queue_len = len(self.queue[guild_id])
         if queue_len == 0:
