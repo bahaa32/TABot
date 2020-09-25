@@ -10,6 +10,8 @@ class Queue(commands.Cog):
         self.voice_channel_cache = {}
 
     def next(self, guild_id):
+        if len(self.queue[guild_id]) == 0:
+            return None
         return self.queue[guild_id].pop(0)
 
     def get_waiting(self, guild_id):
@@ -40,9 +42,9 @@ class Queue(commands.Cog):
         voice_channel_id = self.config.get_server_config(
             member.guild.id, "waiting_voice_id")
         # TODO: Compare IDs directly since it's faster (if it won't break)
-        if before.channel is None and after.channel == self.get_voice_cached(voice_channel_id):
+        if after.channel == self.get_voice_cached(voice_channel_id):
             await self.on_join(member)
-        elif before.channel is self.get_voice_cached(voice_channel_id) and after.channel == None:
+        elif after.channel == None and member in self.queue[member.guild.id]:
             await self.on_leave(member)
 
     async def on_join(self, member):
