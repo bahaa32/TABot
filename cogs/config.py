@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import configparser
 
+
 class Config(commands.Cog):
     def __init__(self, bot):
         # Initialize config
@@ -29,8 +30,9 @@ class Config(commands.Cog):
         with open("config.ini", "w") as configfile:
             self.config.write(configfile)
         return
-    
+
     server_config = property(get_server_config, set_server_config)
+
 
 def setup(bot):
     bot.add_cog(Config(bot))
