@@ -2,8 +2,10 @@ import discord
 from discord.ext import commands
 
 initial_extensions = [
-    "cogs.embeds",
     "cogs.config",
+    "cogs.embed_generator",
+    "cogs.embed_reaction",
+    "cogs.queue",
     "cogs.setup"
     ]
 

@@ -8,10 +8,15 @@ class Config(commands.Cog):
         self.config = configparser.ConfigParser()
         self.config.read("config.ini")
         self.token = self.config["Settings"]["Token"]
+        self.parser = self.config
 
     # Just a wrapper for the config function, makes it a little more convient to use.
     def get_server_config(self, server_id, key):
-        return self.config[str(server_id)][str(key)]
+        try:
+            response = self.config[str(server_id)][str(key)]
+        except KeyError:
+            response = None
+        return response
 
     # Takes tuple, unpacks and sets changes and saves them to local config
     def set_server_config(self, data: tuple):
