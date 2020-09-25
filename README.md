@@ -10,6 +10,7 @@
 
 ### Self hosting
 - Install `discord.py` if you haven't already (`pip install discord.py`)
+- Insert your secret token into `config.ini` (If you don't have one, here's a [good guide](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token))
 - Run `main.py`
 - Invite your bot to your server
 - Profit!
