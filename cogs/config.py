@@ -21,6 +21,16 @@ class Config(commands.Cog):
 
     # Takes tuple, unpacks and sets changes and saves them to local config
     def set_server_config(self, data: tuple):
+        """Allows server configs to be set in a somewhat prettier manner,
+            while handling inconsistent key types (they're always converted to
+            strings, since configparser doesn't like numerical keys.)
+
+        Example Usage:
+            server_config = (server_id, key, value)
+
+        Args:
+            data (tuple)
+        """
         (server_id, key, value) = data
         try:
             self.config[str(server_id)]

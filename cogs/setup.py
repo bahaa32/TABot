@@ -10,8 +10,20 @@ class Setup(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def setup(self, ctx, command, *, arg=None):
-        """ Command which allows any user with admin permissions to
-            set server-specific configuration."""
+        """Command which allows any user with admin permissions
+            to set server-specific configuration. Available options: 
+            queue_chat: Sets queue_id in config.ini, is used to send any messages going to any specific guild.
+            waiting_room: Sets waiting_voice_id in config.ini, the bot listens for anyone joining this voice
+                channel and marks its users as waiting in queue.
+            ta_role: Sets ta_role_id in config.ini, this ID is used to determine if a certain member should be able
+                to execute commands such as (prefix)queue or (prefix)next.
+            mode (WIP): Sets control_mode in config.ini, which indicates the server's preference for which control mode
+                to use (via embeds and reactions or via commands only.)
+
+        Args:
+            command (string): First argument after the command. Example: (prefix)setup command
+            arg (string, optional): All input after first argument, if available. Defaults to None.
+        """
         if not ctx.author.guild_permissions.administrator:
             await ctx.send("You cannot execute this command.")
             return
@@ -33,10 +45,18 @@ class Setup(commands.Cog):
                 self.config.server_config = (
                     ctx.guild.id, "ta_role_id", ta_role.id)
                 await ctx.send(f"TA role set to {discord.utils.escape_mentions(ta_role.name)}")
+        elif command == "mode":
+            if arg == "command":
+                self.config.server_config = (ctx.guild.id, "control_method", "commands")
+            elif arg == "embeds" or arg == "embed":
+                self.config.server_config = (ctx.guild.id, "control_method", "embeds")
         else:
-            await ctx.send("Unexpected argument. Valid arguments: `queue_chat`, `waiting_room`, `ta_role Role Name`.")
+            await ctx.send("Unexpected argument. Valid arguments: `queue_chat`, `waiting_room`, `ta_role Role Name`, `mode (embed/commands)`.")
 
     async def set_waiting_room(self, ctx):
+        """Takes in Context, checks if member is in a voice channel. If true,
+            sets waiting_voice_id in config.ini to the ID of that voice channel.
+        """
         voice_channel = ctx.author.voice
         if voice_channel == None:
             await ctx.send("You must be in a voice channel to set the waiting room!")

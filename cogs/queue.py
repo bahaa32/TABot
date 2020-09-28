@@ -10,16 +10,35 @@ class Queue(commands.Cog):
         self.voice_channel_cache = {}
 
     def next(self, guild_id):
+        """Return next member in queue and remove them from it.
+
+        Args:
+            guild_id (integer): ID of the guild you want to fetch the member from.
+
+        Returns:
+            discord.py Member if the queue isn't empty, otherwise returns None.
+        """
         if len(self.queue[guild_id]) == 0:
             return None
         return self.queue[guild_id].pop(0)
 
-    async def padded_queue(self, guild_id, response_size):
+    # TODO: Beautify, this is kind of ugly
+    async def padded_queue(self, guild_id, response_size: int=-1):
+        """Returns an optionally padded array that's response_size long.
+
+        Args:
+            guild_id (integer): ID of the guild to retreive the queue of
+            response_size (integer): Length of the list needed returns the whole
+                queue if it is set to -1. Defaults to -1.
+
+        Returns:
+            list: The padded list.
+        """
         queue_len = len(self.queue[guild_id])
         # Return response with "padding" according to requested
         # response size, might be useful for the future
         if not guild_id in self.queue or queue_len == 0:
-            if response_size < 0:
+            if response_size == -1:
                 return []
             return [None] * response_size
         # If response size is greater than 0 and length of queue is bigger or equal to that,
@@ -32,18 +51,13 @@ class Queue(commands.Cog):
         elif response_size == -1:
             return self.queue[guild_id]
 
-    def get_waiting(self, guild_id):
-        queue_len = len(self.queue[guild_id])
-        if queue_len == 0:
-            return (None, None)
-        elif queue_len == 1:
-            return (self.queue[guild_id][0], None)
-        else:
-            return (self.queue[guild_id][0], self.queue[guild_id][1])
-
     # Get users already waiting in waiting rooms. Used when bot first starts up.
     @commands.Cog.listener()
     async def on_ready(self):
+        """Runs when bot is ready. Fetches users in all waiting rooms and
+            adds them to the relevant queues so that the queue and next commands
+            are instantly ready for use.
+        """
         for guild_id in self.config.parser.sections()[1:]:
             guild_id = int(guild_id)
             channel_id = int(self.config.get_server_config(
@@ -57,6 +71,10 @@ class Queue(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
+        """https://discordpy.readthedocs.io/en/latest/api.html#discord.VoiceClient.on_voice_state_update
+
+        Handles adding and removing members from queue.
+        """
         voice_channel_id = self.config.get_server_config(
             member.guild.id, "waiting_voice_id")
         # TODO: Compare IDs directly since it's faster (if it won't break)
@@ -79,6 +97,15 @@ class Queue(commands.Cog):
 
     # TODO: Maybe figure out another cleaner way to cache channels?
     def get_voice_cached(self, channel_id):
+        """Looks for channel with ID and stores it in memory for the first call,
+            but instantly returns cached channel from memory on any subsequent call.
+
+        Args:
+            channel_id: ID of the channel to be retreived
+
+        Returns:
+            Discord channel with ID channel_id, None if it doesn't exist.
+        """
         channel_id = int(channel_id)
         if channel_id in self.voice_channel_cache:
             return self.voice_channel_cache[channel_id]
