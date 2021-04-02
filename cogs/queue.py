@@ -78,6 +78,10 @@ class Queue(commands.Cog):
 
         Handles adding and removing members from queue.
         """
+        # Check if state changed without changing the channel
+        #  (mute/unmute, deafen/undeafen trigger that)
+        if before.channel == after.channel:
+            return
         voice_channel_id = self.config.get_server_config(
             member.guild.id, "waiting_voice_id")
         # TODO: Compare IDs directly since it's faster (if it won't break)

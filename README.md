@@ -10,6 +10,7 @@
 
 ### Self hosting
 - Install `discord.py` if you haven't already (`pip install discord.py`)
+- Insert your secret token into `config.ini` (If you don't have one, here's a [good guide](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token))
 - Run `main.py`
 - Invite your bot to your server
 - Profit!
@@ -25,6 +26,5 @@
 - Does not require a database setup for people who want to self-host
 
 ## Known bugs
-- Entering the waiting room and then moving into another channel does not remove you from the queue. I still need to figure out how to handle instances like that, any help is appreciated.
 - (Not sure if that's desireable behavior) TAs are included in waiting lists if they join the waiting room.
 - I don't know, you tell me? 😂
