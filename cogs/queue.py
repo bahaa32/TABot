@@ -83,7 +83,7 @@ class Queue(commands.Cog):
         # TODO: Compare IDs directly since it's faster (if it won't break)
         if after.channel == self.get_voice_cached(voice_channel_id):
             await self.on_join(member)
-        elif after.channel == None and member in self.queue[member.guild.id]:
+        elif after.channel != self.get_voice_cached(voice_channel_id) and member in self.queue[member.guild.id]:
             await self.on_leave(member)
         else:
             return

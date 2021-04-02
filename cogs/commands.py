@@ -7,7 +7,7 @@ class Control_Commands(commands.Cog):
         self.bot = bot
         self.queue = bot.get_cog("Queue")
         self.config = bot.get_cog("Config")
-        self.control = bot.get_cog("Control_Panel")
+        self.control = bot.get_cog("Control")
 
     @commands.command()
     async def next(self, ctx):
