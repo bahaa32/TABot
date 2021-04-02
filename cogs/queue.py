@@ -68,6 +68,9 @@ class Queue(commands.Cog):
                 print("Invalid waiting channel! ID:", channel_id)
                 continue
             self.queue.update({guild_id: channel.members})
+        # Load embeds cog after bot is ready because they're is loaded
+        #   after the queue
+        self.embeds = self.bot.get_cog("Embeds")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -82,6 +85,9 @@ class Queue(commands.Cog):
             await self.on_join(member)
         elif after.channel == None and member in self.queue[member.guild.id]:
             await self.on_leave(member)
+        else:
+            return
+        await self.embeds.update_embed(member.guild.id)
 
     async def on_join(self, member):
         guild_id = member.guild.id
@@ -91,6 +97,7 @@ class Queue(commands.Cog):
         # and being consistent with the get_waiting_users function, since channel.members returns a list of `discord.Member`s
         # but it uses more memory
         self.queue[guild_id].append(member)
+
 
     async def on_leave(self, member):
         self.queue[member.guild.id].remove(member)

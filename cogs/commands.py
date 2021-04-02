@@ -11,17 +11,17 @@ class Control_Commands(commands.Cog):
 
     @commands.command()
     async def next(self, ctx):
-        await self.control.move_next_user(ctx)
+        await self.control.move_next_user(ctx.author)
 
     @commands.command(name="queue")
     async def queue_query(self, ctx):
-        guild_id = ctx.author.guild.id
+        guild_id = ctx.guild.id
         ta_role_id = int(self.config.get_server_config(
             guild_id, "ta_role_id"))
         is_ta = True if discord.utils.find(
             lambda role: role.id == ta_role_id, ctx.author.roles) else False
         if is_ta:
-            queue = await self.queue.padded_queue(guild_id, response_size=-1)
+            queue = await self.queue.padded_queue(guild_id)
             if len(queue) == 0:
                 return await ctx.send("Nobody is in queue.")
             waiting_list = ""
