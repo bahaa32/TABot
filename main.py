@@ -5,6 +5,8 @@ initial_extensions = [
     "cogs.config",
     "cogs.queue",
     "cogs.control",
+    "cogs.commands",
+    "cogs.embeds",
     "cogs.setup"
 ]
 
@@ -15,6 +17,8 @@ bot = commands.Bot(command_prefix="?",
 
 @bot.event
 async def on_ready():
+    """Executes when the bot is logged in.
+    """
     print(
         f'\nLogged in as: {bot.user.name} - {bot.user.id}\nDiscord.py Version: {discord.__version__}\n')
 
